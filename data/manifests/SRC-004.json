@@ -3,18 +3,31 @@
   "provider": "World Bank",
   "dataset": "Global International Ports",
   "source_filename": "attributed_ports.geojson",
-  "retrieved_at": "2026-09-07T00:41:54Z",
+  "retrieved_at": "2026-09-07T10:29:19Z",
   "sha256": "9b877f76ffb9decce60ce5bd8d499e3ccd67599819b8eace12f4b52df055ca42",
   "bytes": 236236,
-  "output": null,
-  "output_sha256": null,
-  "records": 0,
+  "output": "public/data/infrastructure/ports.geojson",
+  "output_sha256": "3da15edfffac14ecf5ad481d447d7f8102feaef3752557bc59ee91c259fe2576",
+  "records": 837,
   "etl_version": "3.2.0",
   "notes": {
-    "source_quirks": [
-      "拡張子は .geojson だが cp1252(2026-09-07 実測)",
-      "JSON の外側に 1 行 System.IO.MemoryStream が付く(2026-09-07 実測)",
-      "UN/LOCODE は一意でない: 856 地物 / 837 種 / 衝突 19 件(2026-09-07 実測、HC-200)"
+    "transform": {
+      "ports": 837,
+      "raw_feature_count": 856,
+      "collapsed_count": 19,
+      "unmapped_country": 6,
+      "unroutable": 13,
+      "snap_km_median": 32.65,
+      "snap_km_max": 159.75,
+      "bytes": 352454
+    },
+    "unmapped_locodes": [
+      "BQKRA",
+      "CXFFC",
+      "GFDDC",
+      "GPPTP",
+      "MQFDF",
+      "YTLON"
     ]
   }
 }

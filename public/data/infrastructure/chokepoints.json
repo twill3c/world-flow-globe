@@ -1,0 +1,139 @@
+{
+ "version": "3.2.0",
+ "layer_id": "CHOKEPOINT",
+ "confidence": "OBSERVED",
+ "generated_at": "2026-09-07T10:27:28Z",
+ "coordinate_caveat": "座標は表示用の参照点である。法的境界でも航行用座標でもない(原典 §32)",
+ "chokepoints": [
+  {
+   "id": "CHOKE_SUEZ",
+   "code": "SUEZ",
+   "name": "Suez Canal",
+   "name_ja": "スエズ運河",
+   "type": "CANAL",
+   "lat": 30.5,
+   "lon": 32.3,
+   "strategic_importance": 5,
+   "connected_seas": [
+    "Mediterranean Sea",
+    "Red Sea"
+   ],
+   "alternative_routes": [
+    "CAPE_OF_GOOD_HOPE"
+   ],
+   "gate_radius_km": null,
+   "canal_id": "CANAL_SUEZ",
+   "notes": [],
+   "location": {
+    "lat": 30.5,
+    "lon": 32.3
+   },
+   "confidence": "OBSERVED"
+  },
+  {
+   "id": "CHOKE_MALACCA",
+   "code": "MALACCA",
+   "name": "Strait of Malacca",
+   "name_ja": "マラッカ海峡",
+   "type": "STRAIT",
+   "lat": 2.5,
+   "lon": 101.5,
+   "strategic_importance": 5,
+   "connected_seas": [
+    "Indian Ocean",
+    "South China Sea"
+   ],
+   "alternative_routes": [
+    "SUNDA",
+    "LOMBOK"
+   ],
+   "gate_radius_km": 180.0,
+   "canal_id": null,
+   "notes": [
+    "閉じるとスンダ海峡・ロンボク海峡へ回る。原典 §32 は代替路を空欄にしているが、実際には存在する"
+   ],
+   "location": {
+    "lat": 2.5,
+    "lon": 101.5
+   },
+   "confidence": "OBSERVED"
+  },
+  {
+   "id": "CHOKE_PANAMA",
+   "code": "PANAMA",
+   "name": "Panama Canal",
+   "name_ja": "パナマ運河",
+   "type": "CANAL",
+   "lat": 9.1,
+   "lon": -79.7,
+   "strategic_importance": 5,
+   "connected_seas": [
+    "Pacific Ocean",
+    "Atlantic Ocean"
+   ],
+   "alternative_routes": [
+    "MAGELLAN_DRAKE"
+   ],
+   "gate_radius_km": null,
+   "canal_id": "CANAL_PANAMA",
+   "notes": [],
+   "location": {
+    "lat": 9.1,
+    "lon": -79.7
+   },
+   "confidence": "OBSERVED"
+  },
+  {
+   "id": "CHOKE_HORMUZ",
+   "code": "HORMUZ",
+   "name": "Strait of Hormuz",
+   "name_ja": "ホルムズ海峡",
+   "type": "STRAIT",
+   "lat": 26.6,
+   "lon": 56.5,
+   "strategic_importance": 5,
+   "connected_seas": [
+    "Persian Gulf",
+    "Gulf of Oman"
+   ],
+   "alternative_routes": [],
+   "gate_radius_km": 140.0,
+   "canal_id": null,
+   "notes": [
+    "代替の海路は無い。ペルシア湾の出入口はここだけである"
+   ],
+   "location": {
+    "lat": 26.6,
+    "lon": 56.5
+   },
+   "confidence": "OBSERVED"
+  },
+  {
+   "id": "CHOKE_BAB_EL_MANDEB",
+   "code": "BAB_EL_MANDEB",
+   "name": "Bab el-Mandeb",
+   "name_ja": "バブ・エル・マンデブ海峡",
+   "type": "STRAIT",
+   "lat": 12.6,
+   "lon": 43.3,
+   "strategic_importance": 5,
+   "connected_seas": [
+    "Red Sea",
+    "Gulf of Aden"
+   ],
+   "alternative_routes": [
+    "CAPE_OF_GOOD_HOPE"
+   ],
+   "gate_radius_km": 140.0,
+   "canal_id": null,
+   "notes": [
+    "ここを閉じるとスエズ運河も使えなくなる —— 紅海が袋になるため"
+   ],
+   "location": {
+    "lat": 12.6,
+    "lon": 43.3
+   },
+   "confidence": "OBSERVED"
+  }
+ ]
+}

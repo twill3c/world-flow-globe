@@ -1,0 +1,119 @@
+{
+  "version": "3.2.0",
+  "generated_by": "etl.download.sources",
+  "sources": [
+    {
+      "id": "SRC-001",
+      "provider": "Natural Earth",
+      "dataset": "Admin 0 Countries (10m)",
+      "license": "Public Domain",
+      "license_url": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "landing_url": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/",
+      "download_url": "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip",
+      "version": "5.1.1",
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": null,
+      "notes": [
+        "原典 §10 の直リンクは 2026-09-07 時点で HTTP 500。CDN 直から取得している",
+        "版は zip 内 ne_10m_admin_0_countries.VERSION.txt で検算する"
+      ]
+    },
+    {
+      "id": "SRC-002",
+      "provider": "Marine Regions (VLIZ)",
+      "dataset": "World EEZ v12 (Low Resolution)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "landing_url": "https://zenodo.org/records/16355917",
+      "download_url": "https://zenodo.org/records/16355917/files/World_EEZ_v12_20231025_LR.zip?download=1",
+      "version": "v12",
+      "published": "2023-10-25",
+      "expected_md5": "1f3903992291fa90aa35bee579b456b5",
+      "unavailable_reason": null,
+      "notes": [
+        "Zenodo が公開する MD5 と照合できる(出典自身の公開値なので循環しない)"
+      ]
+    },
+    {
+      "id": "SRC-003",
+      "provider": "Marine Regions (VLIZ)",
+      "dataset": "World 12 Nautical Miles Zone v4",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "landing_url": "https://www.marineregions.org/downloads.php",
+      "download_url": null,
+      "version": "v4",
+      "published": "2023-10-25",
+      "expected_md5": null,
+      "unavailable_reason": "配布が氏名・所属・メールアドレスの入力と同意チェックを要する Web フォームで、機械取得できない(2026-09-07 実測)。利用者本人の個人情報を代わりに入力することはしない",
+      "notes": [
+        "海岸線からの 12NM 緩衝で代替すると confidence が OBSERVED でなく INFERRED になるため代替しない"
+      ]
+    },
+    {
+      "id": "SRC-004",
+      "provider": "World Bank",
+      "dataset": "Global International Ports",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "landing_url": "https://datacatalog.worldbank.org/search/dataset/0038118/global-international-ports",
+      "download_url": "https://datacatalogfiles.worldbank.org/ddh-published/0038118/1/DR0046414/attributed_ports.geojson",
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": null,
+      "notes": [
+        "拡張子は .geojson だが cp1252(2026-09-07 実測)",
+        "JSON の外側に 1 行 System.IO.MemoryStream が付く(2026-09-07 実測)",
+        "UN/LOCODE は一意でない: 856 地物 / 837 種 / 衝突 19 件(2026-09-07 実測、HC-200)"
+      ]
+    },
+    {
+      "id": "SRC-005",
+      "provider": "World Bank",
+      "dataset": "Global Shipping Traffic Density",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "landing_url": "https://datacatalog.worldbank.org/search/dataset/0037580/global-shipping-traffic-density",
+      "download_url": null,
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": "458 MB のラスタで、取得も集約も本バージョンの予算に収まらない(SPEC.md §9 D-02)",
+      "notes": [
+        "2015-01〜2021-02 の AIS 集計であり、現在の Live AIS ではない(原典 §21)"
+      ]
+    },
+    {
+      "id": "SRC-006",
+      "provider": "UN Trade and Development (UNCTAD)",
+      "dataset": "UNCTADstat Data Hub",
+      "license": "CC BY 3.0 IGO",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/igo/",
+      "landing_url": "https://unctadstat.unctad.org/datacentre/",
+      "download_url": null,
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": "取得経路が未確立(2026-09-07 時点で HEAD が 403、SPEC.md §9 D-03)",
+      "notes": []
+    },
+    {
+      "id": "SRC-007",
+      "provider": "United Nations",
+      "dataset": "UN Comtrade (public preview)",
+      "license": "UN Comtrade の利用条件に従う",
+      "license_url": "https://uncomtrade.org/docs/policy-on-use-and-dissemination-of-un-comtrade-data/",
+      "landing_url": "https://uncomtrade.org/docs/un-comtrade-api/",
+      "download_url": null,
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": "本バージョンでは貿易フローを出荷しない(後続ループ)",
+      "notes": [
+        "public preview は鍵不要で応答することを 2026-09-07 に確認済み"
+      ]
+    }
+  ]
+}

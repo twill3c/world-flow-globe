@@ -1,0 +1,20 @@
+{
+  "dataset_id": "SRC-004",
+  "provider": "World Bank",
+  "dataset": "Global International Ports",
+  "source_filename": "attributed_ports.geojson",
+  "retrieved_at": "2026-09-07T00:41:54Z",
+  "sha256": "9b877f76ffb9decce60ce5bd8d499e3ccd67599819b8eace12f4b52df055ca42",
+  "bytes": 236236,
+  "output": null,
+  "output_sha256": null,
+  "records": 0,
+  "etl_version": "3.2.0",
+  "notes": {
+    "source_quirks": [
+      "拡張子は .geojson だが cp1252(2026-09-07 実測)",
+      "JSON の外側に 1 行 System.IO.MemoryStream が付く(2026-09-07 実測)",
+      "UN/LOCODE は一意でない: 856 地物 / 837 種 / 衝突 19 件(2026-09-07 実測、HC-200)"
+    ]
+  }
+}

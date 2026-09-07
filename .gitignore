@@ -1,0 +1,25 @@
+# 原典 §70
+data/raw/
+data/processed/
+*.zip
+*.tif
+*.tiff
+
+# 環境
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Web
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# デプロイ
+.vercel/
+
+# 作業
+tmp/
+.wt/*.local.json

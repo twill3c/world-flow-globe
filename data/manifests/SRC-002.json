@@ -1,0 +1,19 @@
+{
+  "dataset_id": "SRC-002",
+  "provider": "Marine Regions (VLIZ)",
+  "dataset": "World EEZ v12 (Low Resolution)",
+  "source_filename": "World_EEZ_v12_20231025_LR.zip",
+  "retrieved_at": "2026-09-07T00:41:54Z",
+  "sha256": "5be66b2b2038b489ee9ad1675ae9c1ef3ac7b10fa016e6a6e8796fb37d31e55a",
+  "bytes": 26358854,
+  "output": null,
+  "output_sha256": null,
+  "records": 0,
+  "etl_version": "3.2.0",
+  "notes": {
+    "md5_verified_against_source": "1f3903992291fa90aa35bee579b456b5",
+    "source_quirks": [
+      "Zenodo が公開する MD5 と照合できる(出典自身の公開値なので循環しない)"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+# world-flow-globe ETL(原典 §8)
+# 導入は必ずプロジェクト専用 venv へ(HC-171):
+#   python -m venv .venv
+#   ./.venv/Scripts/python -m pip install -r requirements-etl.txt
+geopandas>=1.0
+pyogrio>=0.10
+shapely>=2.0
+pyproj>=3.6
+pandas>=2.2
+numpy>=2.0
+networkx>=3.3
+jsonschema>=4.20
+requests>=2.31
+pytest>=8.0

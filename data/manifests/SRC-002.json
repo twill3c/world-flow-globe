@@ -3,17 +3,33 @@
   "provider": "Marine Regions (VLIZ)",
   "dataset": "World EEZ v12 (Low Resolution)",
   "source_filename": "World_EEZ_v12_20231025_LR.zip",
-  "retrieved_at": "2026-09-07T00:41:54Z",
+  "retrieved_at": "2026-09-07T10:01:17Z",
   "sha256": "5be66b2b2038b489ee9ad1675ae9c1ef3ac7b10fa016e6a6e8796fb37d31e55a",
   "bytes": 26358854,
-  "output": null,
-  "output_sha256": null,
-  "records": 0,
+  "output": "public/data/base/eez.geojson",
+  "output_sha256": "19824597ebd1b15d74b66ff58b588c363b95e8829bc550af5f59502e5e719387",
+  "records": 284,
   "etl_version": "3.2.0",
   "notes": {
-    "md5_verified_against_source": "1f3903992291fa90aa35bee579b456b5",
-    "source_quirks": [
-      "Zenodo が公開する MD5 と照合できる(出典自身の公開値なので循環しない)"
-    ]
+    "transform": {
+      "features": 284,
+      "rows_in_source": 285,
+      "empty_in_source": [
+        {
+          "mrgid": 48998,
+          "geoname": "Overlapping claim Perejil Island: Spain / Morocco",
+          "pol_type": "Overlapping claim"
+        }
+      ],
+      "vertices_before_simplify": 1040627,
+      "vertices_after_simplify": 140505,
+      "pol_type_counts": {
+        "200NM": 229,
+        "Overlapping claim": 34,
+        "Joint regime": 21
+      },
+      "bytes": 2457739
+    },
+    "simplify_tolerance_deg": 0.1
   }
 }

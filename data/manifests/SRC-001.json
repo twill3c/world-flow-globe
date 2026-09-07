@@ -3,18 +3,20 @@
   "provider": "Natural Earth",
   "dataset": "Admin 0 Countries (10m)",
   "source_filename": "ne_10m_admin_0_countries.zip",
-  "retrieved_at": "2026-09-07T00:41:54Z",
+  "retrieved_at": "2026-09-07T01:06:03Z",
   "sha256": "ce1ac7036499a0edd641fbc093cd209a98f96a49d2eca8480aaacad35138a7f6",
   "bytes": 4930492,
-  "output": null,
-  "output_sha256": null,
-  "records": 0,
+  "output": "public/data/base/countries.geojson",
+  "output_sha256": "88b3937177683755942324572cffe82876099c95db96cd5eb9961fa4be0e673f",
+  "records": 258,
   "etl_version": "3.2.0",
   "notes": {
-    "version_txt": "5.1.1",
-    "source_quirks": [
-      "原典 §10 の直リンクは 2026-09-07 時点で HTTP 500。CDN 直から取得している",
-      "版は zip 内 ne_10m_admin_0_countries.VERSION.txt で検算する"
-    ]
+    "transform": {
+      "features": 258,
+      "vertices_before_simplify": 548472,
+      "vertices_after_simplify": 63362,
+      "bytes": 1116244
+    },
+    "simplify_tolerance_deg": 0.05
   }
 }

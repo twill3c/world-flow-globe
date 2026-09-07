@@ -23,3 +23,6 @@ dist/
 # 作業
 tmp/
 .wt/*.local.json
+
+# 検品の一時出力
+tmp/shots/

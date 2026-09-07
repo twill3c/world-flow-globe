@@ -21,6 +21,7 @@ from etl.config import PUBLIC_BASE, RAW
 from etl.download.manifest import utc_now_iso, write_manifest
 from etl.transform.geo import (
     assert_coordinates_in_range,
+    clean_optional,
     count_vertices,
     geometry_to_geojson,
     polygonal_only,
@@ -97,9 +98,11 @@ def build_eez() -> dict:
                     "mrgid": int(row["MRGID"]),
                     "geoname": row["GEONAME"],
                     "sovereign": row["SOVEREIGN1"],
-                    # 出典が空欄のところは None のまま運ぶ(0 や "" に化けさせない)
-                    "iso_ter1": row["ISO_TER1"] if row["ISO_TER1"] else None,
-                    "territory": row["TERRITORY1"] if row["TERRITORY1"] else None,
+                    # 出典が空欄のところは None のまま運ぶ(0 や "" に化けさせない)。
+                    # **NaN を素通しにしない** —— pandas の欠損は真値なので
+                    # `x if x else None` では落ちない(HC-210)。
+                    "iso_ter1": clean_optional(row["ISO_TER1"]),
+                    "territory": clean_optional(row["TERRITORY1"]),
                     "pol_type": pol,
                     "confidence": "OBSERVED",
                 },

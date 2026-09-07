@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 import shapely
@@ -38,6 +39,22 @@ def count_vertices(geom) -> int:
     if geom is None or geom.is_empty:
         return 0
     return int(shapely.get_coordinates(geom).shape[0])
+
+
+def clean_optional(value):
+    """出典の欠損を ``None`` にする。
+
+    **pandas の欠損は ``float('nan')`` で、Python では真である。**
+    ``value if value else None`` と書くと NaN がそのまま通り、
+    ``json.dumps`` が規格外の ``NaN`` を書く。実際に踏んだ(HC-210)。
+    """
+    if value is None:
+        return None
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    if isinstance(value, str) and not value.strip():
+        return None
+    return value
 
 
 def _round_coords(obj, nd: int):
@@ -94,5 +111,12 @@ def write_feature_collection(
         doc.update(extra)
     dest = Path(dest)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # **`allow_nan=False` を外さない。** 既定の `json.dumps` は欠損値を
+    # `NaN` と書く。これは JSON の規格に無いので、Python は読めてもブラウザは
+    # 構文エラーで落ちる —— つまり **pytest が全部緑のまま、画面だけが壊れる**。
+    # 2026-09-08 に実際に踏んだ(eez.geojson に NaN が 33 個。HC-210 の記録)。
+    dest.write_text(
+        json.dumps(doc, ensure_ascii=False, separators=(",", ":"), allow_nan=False),
+        encoding="utf-8",
+    )
     return dest

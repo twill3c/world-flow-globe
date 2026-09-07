@@ -130,6 +130,7 @@ def apply_passages(mask: np.ndarray, res: float = RESOLUTION_DEG) -> tuple[np.nd
                 "waypoints": [[int(i), int(j)] for i, j in waypoints],
                 "cells": [[int(i), int(j)] for i, j in cells],
                 "cells_opened": opened,
+                "criterion": p.criterion,
                 "reason": p.reason,
             }
         )
@@ -181,6 +182,14 @@ def canal_edges(mask: np.ndarray, res: float = RESOLUTION_DEG) -> list[dict]:
 
 
 def build_nav_grid() -> dict:
+    from etl.transform.routing import (
+        POLAR_LIMIT_NORTH_DEG,
+        POLAR_LIMIT_SOUTH_DEG,
+        build_weight_table,
+        encode_float64,
+        haversine_km,
+    )
+
     land = load_land()
     mask = base_mask(land)
     navigable_before = int(mask.sum())
@@ -188,6 +197,22 @@ def build_nav_grid() -> dict:
     mask, passages = apply_passages(mask)
     canals = canal_edges(mask)
     navigable_after = int(mask.sum())
+
+    # 辺の重みの表(SPEC.md §6.1 / HC-073)。**バイト列のまま配る**ので、
+    # ブラウザ側は sin/cos を一度も呼ばずに同じ数から足し算を始められる。
+    table, meridional = build_weight_table(mask.shape[0], mask.shape[1], RESOLUTION_DEG)
+
+    # 運河の辺の重み。公表された運河長と、両端セル間の測地線距離の**大きい方**を使う。
+    # 運河は曲がった水路なので直線より短くはなりえず、この床を置くと
+    # 三角不等式が保たれる —— 経路の下界(G-07)がそのまま成り立つ。
+    for c, spec in zip(canals, CANALS):
+        (ia, ja), (ib, jb) = c["cells"][0], c["cells"][-1]
+        lon_a, lat_a = cell_center(ia, ja, RESOLUTION_DEG)
+        lon_b, lat_b = cell_center(ib, jb, RESOLUTION_DEG)
+        geo = haversine_km(lon_a, lat_a, lon_b, lat_b)
+        c["geodesic_between_cells_km"] = round(geo, 4)
+        c["weight_km"] = max(geo, spec.length_km)
+        c["weight_rule"] = "max(公表された運河長, 両端セル間の測地線距離)"
 
     packed = np.packbits(mask.ravel())
     doc = {
@@ -206,6 +231,25 @@ def build_nav_grid() -> dict:
         "navigable_cells_before_corrections": navigable_before,
         "passages": passages,
         "canals": canals,
+        "polar_limit": {
+            "north_deg": POLAR_LIMIT_NORTH_DEG,
+            "south_deg": POLAR_LIMIT_SOUTH_DEG,
+            "confidence": "ESTIMATED",
+            "default_applied": True,
+            "toggleable": True,
+            "rationale": (
+                "この模型には海氷が無い。制限を置かないと、スエズ運河を閉じた瞬間に"
+                "船が北極点の上を通る(2026-09-07 実測: シンガポール→ロッテルダムの"
+                "626 セルのうち 408 セルが 70 度以北・最北 89.75 度)。しかもマラッカ閉鎖でも"
+                "同じ経路になり、二つの閉鎖が区別できなくなる。"
+                "北 70 度は北極海航路が季節限定であること、南 -60 度は"
+                "ドレーク海峡(-56〜-58 度)を残しつつ氷山帯を外すことによる。"
+                "**これは地理ではなく仮定なので、画面から外せる**"
+            ),
+        },
+        "weight_table_encoding": "float64-little-endian-base64, shape=[rows,3], k=0:北隣 1:同緯度 2:南隣(経度 1 セル隣)",
+        "weight_table_base64": encode_float64(table),
+        "meridional_km": meridional,
         "note": (
             "セルを 5x5 に細分し、海である小点の割合が 0.5 以上のセルを航行可能とした。"
             "この線は実船の航跡ではない —— 陸を避けて引いた推定である"

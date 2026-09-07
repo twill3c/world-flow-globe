@@ -82,6 +82,58 @@ def load_nav_mask() -> np.ndarray:
     return bits[: doc["rows"] * doc["cols"]].reshape(doc["rows"], doc["cols"]).astype(bool)
 
 
+def main_ocean_cells(mask: np.ndarray) -> set[int]:
+    """世界の海として繋がっているセルの集合を返す(運河の辺を含む)。
+
+    **「近くに海がある」と「そこから世界へ出られる」は別のことである。**
+    はじめは吸着できたかどうかだけで「経路に使える港」を決めていたが、
+    バンクーバーが**孤立した内海のセル**に吸着し、他の 25 港すべてから
+    到達不能になった(2026-09-07 実測)。近さは連結性を意味しない。
+    """
+    from collections import deque
+
+    rows, cols = mask.shape
+    doc = json.loads(NAV_OUT.read_text(encoding="utf-8"))
+    extra: dict[int, list[int]] = {}
+    for c in doc["canals"]:
+        a = c["cells"][0][0] * cols + c["cells"][0][1]
+        b = c["cells"][-1][0] * cols + c["cells"][-1][1]
+        extra.setdefault(a, []).append(b)
+        extra.setdefault(b, []).append(a)
+
+    seen = np.zeros(mask.shape, dtype=bool)
+    best: set[int] = set()
+    for si in range(rows):
+        for sj in range(cols):
+            if not mask[si, sj] or seen[si, sj]:
+                continue
+            comp: set[int] = set()
+            q = deque([(si, sj)])
+            seen[si, sj] = True
+            while q:
+                i, j = q.popleft()
+                comp.add(i * cols + j)
+                for di in (-1, 0, 1):
+                    ni = i + di
+                    if ni < 0 or ni >= rows:
+                        continue
+                    for dj in (-1, 0, 1):
+                        if di == 0 and dj == 0:
+                            continue
+                        nj = (j + dj) % cols
+                        if mask[ni, nj] and not seen[ni, nj]:
+                            seen[ni, nj] = True
+                            q.append((ni, nj))
+                for m in extra.get(i * cols + j, ()):
+                    mi, mj = divmod(m, cols)
+                    if mask[mi, mj] and not seen[mi, mj]:
+                        seen[mi, mj] = True
+                        q.append((mi, mj))
+            if len(comp) > len(best):
+                best = comp
+    return best
+
+
 def snap_to_navigable(
     mask: np.ndarray, lon: float, lat: float, max_km: float = MAX_SNAP_KM
 ) -> tuple[tuple[int, int] | None, float | None]:
@@ -124,10 +176,12 @@ def build_ports() -> dict:
     res = read_wb_ports(SRC)
     a2a3 = load_alpha2_to_alpha3()
     mask = load_nav_mask()
+    ocean = main_ocean_cells(mask)
+    cols = mask.shape[1]
 
     features = []
     unmapped: list[str] = []
-    unroutable: list[str] = []
+    unroutable: dict[str, str] = {}
     snap_km: list[float] = []
 
     for rec in res.records:
@@ -137,11 +191,17 @@ def build_ports() -> dict:
             unmapped.append(rec.locode)
 
         cell, dist = snap_to_navigable(mask, rec.lon, rec.lat)
-        routable = cell is not None
-        if not routable:
-            unroutable.append(rec.locode)
+        # 吸着できただけでは足りない。**そのセルから世界の海へ出られること**まで要る。
+        in_ocean = cell is not None and (cell[0] * cols + cell[1]) in ocean
+        routable = in_ocean
+        if cell is None:
+            unroutable[rec.locode] = "上限内に航行可能セルが無い(内陸水路)"
+        elif not in_ocean:
+            unroutable[rec.locode] = "吸着先が孤立した水域で、世界の海と繋がっていない"
         else:
             snap_km.append(dist)
+        if not routable:
+            cell, dist = None, None
 
         features.append(
             {
@@ -196,6 +256,7 @@ def build_ports() -> dict:
                 "grid_resolution_deg": RESOLUTION_DEG,
                 "unroutable_count": len(unroutable),
                 "unroutable_locodes": sorted(unroutable),
+                "unroutable_reasons": {k: unroutable[k] for k in sorted(unroutable)},
             },
             "country_code": {
                 "method": "UN/LOCODE の先頭 2 文字(ISO 3166-1 alpha-2)→ Natural Earth ISO_A3_EH",

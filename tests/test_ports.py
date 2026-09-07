@@ -20,24 +20,37 @@ from etl.transform.ports import haversine_km
 from tests.test_nav_grid import unpack_mask
 from etl.transform.nav_grid import OUT as NAV_OUT
 
-#: 2026-09-07 に実測した「経路に使えない港」13 件と、その理由。
-#: **一件ずつ実物を見て分類した。** すべて外洋から 0.5 度のグリッドでは
-#: 届かない内陸水路の港である。件数だけでなく理由まで台帳に残すのは、
+#: 2026-09-07 に実測した「経路に使えない港」19 件と、その理由。
+#: **一件ずつ実物を見て分類した。** 件数だけでなく理由まで台帳に残すのは、
 #: 将来 1 件増えたときに「また河川港か」「新しい種類の欠陥か」を区別するため。
+#:
+#: 二つの理由がある。
+#:
+#: - ``inland``   … 上限内に航行可能セルが無い(河川・湖の港)
+#: - ``isolated`` … 吸着はできたが、その水域が世界の海と繋がっていない
+#:
+#: ``isolated`` に通路を足すかどうかは ``etl/transform/passages.py`` の条件で決める。
+#: 瀬戸内海(日本 5 港)は最上位が博多の 164 位で条件に届かないため足していない。
 EXPECTED_UNROUTABLE = {
-    "ARROS": "パラナ川(ロサリオ)",
-    "BRMAO": "アマゾン川(マナウス)",
-    "BRMCP": "アマゾン川河口(サンタナ/マカパ)",
-    "CAMTR": "セントローレンス川(モントリオール)",
-    "CATOR": "五大湖(トロント)",
-    "COLET": "アマゾン川(レティシア)",
-    "PEIQT": "アマゾン川(イキトス)",
-    "PYASU": "パラグアイ川(アスンシオン)",
-    "RUDUD": "エニセイ川(ドゥジンカ)",
-    "TRYAR": "イズミット湾の奥(ヤルムジャ)",
-    "USCAV": "五大湖・エリー湖(クリーブランド)",
-    "USPDP": "デラウェア川(フィラデルフィア)",
-    "VEPLA": "オリノコ川(パルア)",
+    "ARROS": ("パラナ川(ロサリオ)", "inland"),
+    "BRMAO": ("アマゾン川(マナウス)", "inland"),
+    "BRMCP": ("アマゾン川河口(サンタナ/マカパ)", "inland"),
+    "CAMTR": ("セントローレンス川(モントリオール)", "inland"),
+    "CATOR": ("五大湖(トロント)", "inland"),
+    "COLET": ("アマゾン川(レティシア)", "inland"),
+    "JPFKY": ("瀬戸内海(福山)", "isolated"),
+    "JPHTD": ("博多湾(博多)", "isolated"),
+    "JPIMB": ("瀬戸内海(今治)", "isolated"),
+    "JPMIZ": ("瀬戸内海(水島)", "isolated"),
+    "JPTAK": ("瀬戸内海(高松)", "isolated"),
+    "PEIQT": ("アマゾン川(イキトス)", "inland"),
+    "PYASU": ("パラグアイ川(アスンシオン)", "inland"),
+    "RUDUD": ("エニセイ川(ドゥジンカ)", "inland"),
+    "TRYAR": ("イズミット湾の奥(ヤルムジャ)", "inland"),
+    "USCAV": ("五大湖・エリー湖(クリーブランド)", "inland"),
+    "USMSY": ("ポンチャートレイン湖(ニューオーリンズ)", "isolated"),
+    "USPDP": ("デラウェア川(フィラデルフィア)", "inland"),
+    "VEPLA": ("オリノコ川(パルア)", "inland"),
 }
 
 
@@ -153,16 +166,35 @@ def test_t303_unroutable_set_matches_the_reviewed_ledger(ports):
     )
 
 
+def test_t303_unroutable_reasons_match_the_reviewed_ledger(ports):
+    """理由の区分まで台帳と一致すること。
+
+    「河川港だから」と「孤立した水域だから」は**直し方が違う** ——
+    前者は直せない(0.5 度の海洋グリッドは河川を表せない)。
+    後者は通路を足せば直る。取り違えると、直せるものを諦めることになる。
+    """
+    reasons = ports["snap"]["unroutable_reasons"]
+    for locode, (_, kind) in EXPECTED_UNROUTABLE.items():
+        assert locode in reasons, f"{locode} が台帳にあるのに出力に無い"
+        actual = "inland" if "内陸" in reasons[locode] else "isolated"
+        assert actual == kind, f"{locode}: 台帳 {kind} / 実際 {actual}"
+
+
 def test_t303_unroutable_ports_really_are_far_from_the_sea(ports, mask):
-    """陽性対照: 吸着できなかった港が、本当にどの航行可能セルからも遠いこと。
+    """陽性対照: 「内陸水路」と分類した港が、本当にどの航行可能セルからも遠いこと。
 
     吸着器の打ち切りが早すぎるだけ、という故障と区別する。
+    ``isolated`` の港は近くに海があるので、この検査の対象ではない。
     """
     rows, cols = mask.shape
+    checked = 0
     for f in ports["features"]:
         p = f["properties"]
         if p["routable"]:
             continue
+        if EXPECTED_UNROUTABLE[p["unlocode"]][1] != "inland":
+            continue
+        checked += 1
         lon, lat = f["geometry"]["coordinates"]
         i0, j0 = cell_index(lon, lat, RESOLUTION_DEG)
         ring = int(MAX_SNAP_KM / (RESOLUTION_DEG * 111.32 * 0.5)) + 2
@@ -183,6 +215,7 @@ def test_t303_unroutable_ports_really_are_far_from_the_sea(ports, mask):
         assert best > MAX_SNAP_KM, (
             f"{p['port_id']} は {best:.1f} km に航行可能セルがあるのに吸着していない"
         )
+    assert checked >= 10, "内陸水路として分類した港が少なすぎる(この検査が働いていない)"
 
 
 # ---------------------------------------------------------------------------

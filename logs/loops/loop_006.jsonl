@@ -1,0 +1,1 @@
+{"v": "1.2", "ts": "2026-09-08T09:03:51+09:00", "project": "world-flow-globe", "loop_id": "loop_006", "event": "loop_start", "data": {"goal": "README を実測で書き直し、GitHub 公開・Vercel デプロイ・app-menu 掲載・解説アーティファクトまで通す", "spec_refs": ["F-14", "G-11", "G-12", "N-01", "N-02"], "scaffold_version": "1.30.0", "agent": "claude-code", "model": "claude-opus-5"}}

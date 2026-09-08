@@ -1,0 +1,17 @@
+# 配信に要らないもの(アップロード数の上限対策 — フリートの実測より)
+.venv
+node_modules
+data/raw
+data/processed
+etl
+harness
+logs
+scripts
+schema
+tests
+tmp
+docs
+*.md
+!README.md
+requirements-etl*.txt
+pytest.ini

@@ -69,6 +69,18 @@ export function congestionBand(u: number): PortCongestion["band"] {
 const KNOTS = 16.0;
 const KM_PER_NM = 1.852;
 
+/**
+ * 「再ルートになった」と数える最小の差(km)。
+ *
+ * **出荷している `distance_km` はメートル単位に丸めてある。** 探索は丸めない値を
+ * 返すので、引き算すると経路が同じでも最大 0.5 m の差が出る。閾値を 1 mm に
+ * していたときは、容量減 75% で**本当は 3 本のところ 47 本**が「影響あり」と出た
+ * (2026-09-08 実測)。表示のために丸めた値を判定の根拠にしてはいけない(HC-068)。
+ *
+ * 1 km は「船が実際に遠回りした」と言える最小の単位として置いている。
+ */
+export const REROUTE_MIN_KM = 1;
+
 export function transitDays(km: number): number {
   return km / (KNOTS * KM_PER_NM * 24.0);
 }
@@ -210,7 +222,7 @@ export async function runScenario(
         simulated_days: transitDays(km),
         additional_km: km - r.distance_km,
         additional_days: transitDays(km) - r.transit_time_days,
-        status: km > r.distance_km + 1e-6 ? "REROUTED" : "UNAFFECTED",
+        status: km > r.distance_km + REROUTE_MIN_KM ? "REROUTED" : "UNAFFECTED",
         segments: splitAntimeridian(pts),
       });
     }

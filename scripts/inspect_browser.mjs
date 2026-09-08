@@ -192,7 +192,9 @@ try {
 
       // シミュレーション(F-08 / F-09)。**押した結果が数として出ること**を見る。
       await page.selectOption(".simulation-panel select", "CHOKE_SUEZ");
-      await page.locator(".simulation-panel .primary").click();
+      // **見え方(ボタンの名前)で選ぶ。** クラス名で選ぶと、感度分析のボタンが
+      // 増えたときに黙って二つに当たる(2026-09-08 に踏んだ)。
+      await page.getByRole("button", { name: "シミュレーションを実行" }).click();
       await page.waitForFunction(() => !!document.querySelector(".metrics dl"), null, {
         timeout: 180_000,
       });
@@ -221,7 +223,7 @@ try {
         `wide: シミュレーションが ${simMs} ms(検品の上限 3,500 ms。SPEC.md N-04 の目標は 2,000 ms)`);
 
       // **計算中に画面が固まらないこと。** 総時間より、こちらが利用者に効く。
-      await page.locator(".simulation-panel .primary").click();
+      await page.getByRole("button", { name: "シミュレーションを実行" }).click();
       await page.waitForTimeout(400);
       const responsive = await page.evaluate(
         () =>
@@ -233,7 +235,10 @@ try {
       note(`wide: 計算中のフレーム間隔 ${Math.round(responsive)} ms`);
       check(responsive < 400, `wide: 計算中に画面が固まっている(${Math.round(responsive)} ms)`);
       await page.waitForFunction(
-        () => !document.querySelector(".simulation-panel .primary")?.disabled,
+        () =>
+          ![...document.querySelectorAll(".simulation-panel button")].some(
+            (b) => b.textContent?.includes("計算中"),
+          ),
         null,
         { timeout: 180_000 },
       );
@@ -243,6 +248,33 @@ try {
         [...document.querySelectorAll(".congestion .band")].map((e) => e.textContent),
       );
       note(`wide: 混雑の区分 ${bands.length} 行`);
+
+      // --- 感度分析(F-17 / G-25) -----------------------------------------
+      // **画面の上で二経路一致が出ることまで見る。** SPEC で「AI の代わりに出す」と
+      // 宣言している以上、宣言だけで実物が無い状態を検品が通してはならない。
+      await page.getByRole("button", { name: /の応答を測る$/ }).click();
+      await page.waitForFunction(() => !!document.querySelector(".sens-table tbody tr"), null, {
+        timeout: 300_000,
+      });
+      const sens = await page.evaluate(() => ({
+        rows: document.querySelectorAll(".sens-table tbody tr").length,
+        chartPoints: document.querySelectorAll(".sens-chart circle").length,
+        crosscheck: document.querySelector(".crosscheck")?.className ?? "(無い)",
+        crosscheckText: document.querySelector(".crosscheck")?.textContent ?? "",
+        // 折れ目の実物: 25% と 100% の追加距離
+        cells: [...document.querySelectorAll(".sens-table tbody tr")].map((tr) =>
+          [...tr.querySelectorAll("td")].map((td) => td.textContent),
+        ),
+      }));
+      check(sens.rows === 6, `wide: 感度分析の水準が ${sens.rows} 行(6 のはず)`);
+      check(sens.chartPoints === 6, `wide: 感度の図の点が ${sens.chartPoints} 個`);
+      check(
+        sens.crosscheck.includes("agree"),
+        `wide: 二経路一致が出ていない(${sens.crosscheck} / ${sens.crosscheckText.slice(0, 60)})`,
+      );
+      const km25 = sens.cells.find((c) => c[0] === "25%")?.[3] ?? "?";
+      const km100 = sens.cells.find((c) => c[0] === "100%")?.[3] ?? "?";
+      note(`wide: 感度分析 — 二経路一致 / 25% で ${km25} → 100% で ${km100}`);
     }
 
     check(consoleErrors.length === 0,

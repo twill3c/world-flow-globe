@@ -7,6 +7,7 @@
 import { useMemo, useState } from "react";
 import { NavGraph } from "../../graph/navGraph";
 import { runScenario, type SimulationResult } from "../../simulation/closure";
+import SensitivityPanel from "./SensitivityPanel";
 import type {
   Chokepoint,
   FeatureCollection,
@@ -189,6 +190,13 @@ export default function SimulationPanel(props: Props) {
           <CongestionTable result={result} active={active} />
         </>
       )}
+
+      <SensitivityPanel
+        chokepoint={props.chokepoints.find((c) => c.id === target)}
+        graph={graph}
+        navGrid={props.navGrid}
+        routesDoc={props.routesDoc}
+      />
     </section>
   );
 }

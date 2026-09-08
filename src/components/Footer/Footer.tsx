@@ -8,9 +8,9 @@
 
 export const REPO_URL = "https://github.com/twill3c/world-flow-globe";
 
-/** 解説アーティファクト。**公開したら URL を差し替える**(loop_008)。 */
-export const GUIDE_URL = `${REPO_URL}/blob/main/README.md`;
-export const DESIGN_URL = `${REPO_URL}/blob/main/SPEC.md`;
+/** 解説アーティファクト(2026-09-08 公開)。 */
+export const GUIDE_URL = "https://claude.ai/code/artifact/81a537da-7be0-49e4-b56d-ee98ea4f4ff1";
+export const DESIGN_URL = "https://claude.ai/code/artifact/1f7d0c47-eff0-45ea-a623-68a89c591a55";
 
 export default function Footer() {
   return (

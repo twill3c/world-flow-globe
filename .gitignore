@@ -26,3 +26,5 @@ tmp/
 
 # 検品の一時出力
 tmp/shots/
+
+.vercel

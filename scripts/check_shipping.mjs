@@ -27,6 +27,7 @@ const DIST = join(ROOT, "dist");
 const ALLOWED_HOSTS = {
   "github.com": "フッタのリンク先(規約 5 項目)",
   "app-menu-amber.vercel.app": "フッタの App Menu",
+  "claude.ai": "フッタの解説アーティファクト 2 本",
   "react.dev": "React が例外メッセージに埋め込む説明ページ(取りに行かない)",
   "www.w3.org": "SVG / XML の名前空間 URI(取りに行かない)",
   "www.shadertoy.com": "three.js のシェーダの出典表示(コメント文字列)",

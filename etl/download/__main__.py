@@ -17,7 +17,7 @@ from etl.download.sources import SOURCES, fetch, local_status, write_source_regi
 def _verify_natural_earth_version(path, expected: str) -> str:
     """配布物自身が申告する版を読む(非循環のオラクル)。"""
     with zipfile.ZipFile(path) as z:
-        got = z.read("ne_10m_admin_0_countries.VERSION.txt").decode("utf-8").strip()
+        got = z.read(path.stem + ".VERSION.txt").decode("utf-8").strip()
     if got != expected:
         raise RuntimeError(f"Natural Earth の版が違う: expected={expected} got={got}")
     return got
@@ -37,7 +37,7 @@ def main() -> int:
             continue
         path = fetch(src, force=args.force)
         note: dict = {}
-        if src.id == "SRC-001":
+        if src.id in ("SRC-001", "SRC-010"):
             note["version_txt"] = _verify_natural_earth_version(path, src.version or "")
         if src.expected_md5:
             note["md5_verified_against_source"] = src.expected_md5

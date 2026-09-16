@@ -131,7 +131,32 @@ export interface PortProps {
   snap_km: number | null;
   routable: boolean;
   confidence: Confidence;
+  /**
+   * 座標を独立の出典と照合した結果(SPEC.md G-26、loop_008)。
+   * - CORRECTED … SRC-004 の座標が別の場所だったので訂正した
+   * - CORROBORATED … 独立の出典と 50 km 以内で一致した
+   * - UNCORROBORATED … 照合できる出典が無かった。正しいとも誤りとも確かめていない
+   * - DISPUTED … 位置が決められない。経路に使わない
+   */
+  position_check: PositionCheck;
+  /** 一致した出典と距離(km) */
+  position_evidence: Record<string, number>;
+  /** 訂正前の SRC-004 の座標 [経度, 緯度]。訂正していなければ null */
+  source_coordinates: [number, number] | null;
+  /** UN/LOCODE が同名の別地点を指していたときの、港としてのコード */
+  locode_candidate: string | null;
+  /** 訂正表の判定理由 */
+  position_note: string | null;
 }
+
+export type PositionCheck = "CORRECTED" | "CORROBORATED" | "UNCORROBORATED" | "DISPUTED";
+
+export const POSITION_CHECK_LABEL: Record<PositionCheck, string> = {
+  CORRECTED: "訂正済み",
+  CORROBORATED: "照合済み",
+  UNCORROBORATED: "照合できる出典なし",
+  DISPUTED: "位置に疑義",
+};
 
 export interface FeatureCollection<P> {
   type: "FeatureCollection";

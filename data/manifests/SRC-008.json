@@ -1,0 +1,20 @@
+{
+  "dataset_id": "SRC-008",
+  "provider": "U.S. National Geospatial-Intelligence Agency (NGA)",
+  "dataset": "World Port Index (Pub. 150)",
+  "source_filename": "UpdatedPub150.csv",
+  "retrieved_at": "2026-09-16T21:30:07Z",
+  "sha256": "315644f1e77966291633145fd351c2762b37702d115926b9ed074b39e8e21667",
+  "bytes": 3508891,
+  "output": null,
+  "output_sha256": null,
+  "records": 0,
+  "etl_version": "3.2.0",
+  "notes": {
+    "source_quirks": [
+      "港ごとの座標と UN/LOCODE を持つ。SRC-004 とは別に編まれた台帳なので、位置の照合に使える",
+      "UN/LOCODE 列は 'JP SMZ' のように空白入りで、空欄や 5 文字でない値も混ざる(2026-09-17 実測)",
+      "同じ UN/LOCODE が複数の港に付くことがある(US GLC がニュージャージーとマサチューセッツ)"
+    ]
+  }
+}

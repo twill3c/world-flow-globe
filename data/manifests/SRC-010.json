@@ -1,0 +1,20 @@
+{
+  "dataset_id": "SRC-010",
+  "provider": "Natural Earth",
+  "dataset": "Admin 1 States, Provinces (10m)",
+  "source_filename": "ne_10m_admin_1_states_provinces.zip",
+  "retrieved_at": "2026-09-16T21:30:07Z",
+  "sha256": "efc59726337323058f9446210adc96673179cd344e053666ee3d28cb58ba2b05",
+  "bytes": 14909524,
+  "output": null,
+  "output_sha256": null,
+  "records": 0,
+  "etl_version": "3.2.0",
+  "notes": {
+    "version_txt": "5.1.1",
+    "source_quirks": [
+      "UN/LOCODE の地方区分コードを多角形に引くために使う",
+      "区分コードの体系が UN/LOCODE と食い違う国がある(イラン・ノルウェーの番号の改定)"
+    ]
+  }
+}

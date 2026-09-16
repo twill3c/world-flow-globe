@@ -114,6 +114,73 @@
       "notes": [
         "public preview は鍵不要で応答することを 2026-09-07 に確認済み"
       ]
+    },
+    {
+      "id": "SRC-008",
+      "provider": "U.S. National Geospatial-Intelligence Agency (NGA)",
+      "dataset": "World Port Index (Pub. 150)",
+      "license": "Public Domain(米国政府の著作物)",
+      "license_url": "https://msi.nga.mil/Publications/WPI",
+      "landing_url": "https://msi.nga.mil/Publications/WPI",
+      "download_url": "https://msi.nga.mil/api/publications/download?type=view&key=16920959/SFH00000/UpdatedPub150.csv",
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": null,
+      "notes": [
+        "港ごとの座標と UN/LOCODE を持つ。SRC-004 とは別に編まれた台帳なので、位置の照合に使える",
+        "UN/LOCODE 列は 'JP SMZ' のように空白入りで、空欄や 5 文字でない値も混ざる(2026-09-17 実測)",
+        "同じ UN/LOCODE が複数の港に付くことがある(US GLC がニュージャージーとマサチューセッツ)"
+      ]
+    },
+    {
+      "id": "SRC-009",
+      "provider": "UNECE(datasets/un-locode による CSV 化)",
+      "dataset": "UN/LOCODE Code List 2024-2",
+      "license": "ODC-PDDL-1.0",
+      "license_url": "http://opendatacommons.org/licenses/pddl/",
+      "landing_url": "https://unece.org/trade/cefact/unlocode-code-list-country-and-territory",
+      "download_url": "https://raw.githubusercontent.com/datasets/un-locode/b1309b37edea63334a819a78c22b8967f61c37ad/data/code-list.csv",
+      "version": "2024.2.0",
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": null,
+      "notes": [
+        "SRC-004 の主キー UN/LOCODE の定義元。地方区分(ISO 3166-2)・機能(1 桁目が '1' なら港)・座標を持つ",
+        "座標は分単位で、SRC-004 の 837 港のうち 504 港にしか無い(2026-09-17 実測)",
+        "**SRC-004 の座標は UN/LOCODE の座標をそのまま写したものが多い**(504 港中 452 港が完全一致)。一致する場合は独立の証拠として数えない"
+      ]
+    },
+    {
+      "id": "SRC-010",
+      "provider": "Natural Earth",
+      "dataset": "Admin 1 States, Provinces (10m)",
+      "license": "Public Domain",
+      "license_url": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "landing_url": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-1-states-provinces/",
+      "download_url": "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_1_states_provinces.zip",
+      "version": "5.1.1",
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": null,
+      "notes": [
+        "UN/LOCODE の地方区分コードを多角形に引くために使う",
+        "区分コードの体系が UN/LOCODE と食い違う国がある(イラン・ノルウェーの番号の改定)"
+      ]
+    },
+    {
+      "id": "SRC-011",
+      "provider": "Wikidata",
+      "dataset": "個別の項目(訂正表が QID で引用するものだけ)",
+      "license": "CC0 1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing_url": "https://www.wikidata.org/",
+      "download_url": null,
+      "version": null,
+      "published": null,
+      "expected_md5": null,
+      "unavailable_reason": "一括では取得しない。SRC-008 にも SRC-009 にも座標が無い港について、訂正表 data/corrections/port_positions.csv が QID と座標を引用する",
+      "notes": []
     }
   ]
 }

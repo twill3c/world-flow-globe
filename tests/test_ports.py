@@ -20,17 +20,25 @@ from etl.transform.ports import haversine_km
 from tests.test_nav_grid import unpack_mask
 from etl.transform.nav_grid import OUT as NAV_OUT
 
-#: 2026-09-07 に実測した「経路に使えない港」19 件と、その理由。
-#: **一件ずつ実物を見て分類した。** 件数だけでなく理由まで台帳に残すのは、
+#: 「経路に使えない港」と、その理由。2026-09-07 に 19 件で作り、2026-09-17(loop_008)に
+#: 港の座標を独立の出典と照合して訂正したあと 18 件に置き直した。
+#: 件数だけでなく理由まで台帳に残すのは、
 #: 将来 1 件増えたときに「また河川港か」「新しい種類の欠陥か」を区別するため。
 #:
-#: 二つの理由がある。
+#: **2026-09-07 の台帳は「一件ずつ実物を見て分類した」と書きながら、名前しか見ていなかった。**
+#: USPDP を「デラウェア川(フィラデルフィア)」、JPHTD を「博多湾(博多)」としたが、
+#: 座標はそれぞれニューヨーク州北部の内陸と、愛媛県の伯方島だった。名前から場所を
+#: 思い浮かべ、座標の側を確かめていない。訂正後は三港(USPDP・JPHTD・TRYAR)とも
+#: 吸着でき、台帳から外れた。**場所を書くときは座標から書く。**
+#:
+#: 三つの理由がある。
 #:
 #: - ``inland``   … 上限内に航行可能セルが無い(河川・湖の港)
 #: - ``isolated`` … 吸着はできたが、その水域が世界の海と繋がっていない
+#: - ``disputed`` … 位置に疑義があり、訂正表で経路に使わないと判定した
 #:
 #: ``isolated`` に通路を足すかどうかは ``etl/transform/passages.py`` の条件で決める。
-#: 瀬戸内海(日本 5 港)は最上位が博多の 164 位で条件に届かないため足していない。
+#: 瀬戸内海(日本 4 港)は条件に届かないため足していない。
 EXPECTED_UNROUTABLE = {
     "ARROS": ("パラナ川(ロサリオ)", "inland"),
     "BRMAO": ("アマゾン川(マナウス)", "inland"),
@@ -39,17 +47,16 @@ EXPECTED_UNROUTABLE = {
     "CATOR": ("五大湖(トロント)", "inland"),
     "COLET": ("アマゾン川(レティシア)", "inland"),
     "JPFKY": ("瀬戸内海(福山)", "isolated"),
-    "JPHTD": ("博多湾(博多)", "isolated"),
     "JPIMB": ("瀬戸内海(今治)", "isolated"),
+    "JPISS": ("鹿児島県伊佐市の内陸。どの港か決められない", "disputed"),
     "JPMIZ": ("瀬戸内海(水島)", "isolated"),
     "JPTAK": ("瀬戸内海(高松)", "isolated"),
     "PEIQT": ("アマゾン川(イキトス)", "inland"),
+    "PTPIC": ("ポルトガル本土ブラガ県の内陸。どの港か決められない", "disputed"),
     "PYASU": ("パラグアイ川(アスンシオン)", "inland"),
     "RUDUD": ("エニセイ川(ドゥジンカ)", "inland"),
-    "TRYAR": ("イズミット湾の奥(ヤルムジャ)", "inland"),
     "USCAV": ("五大湖・エリー湖(クリーブランド)", "inland"),
     "USMSY": ("ポンチャートレイン湖(ニューオーリンズ)", "isolated"),
-    "USPDP": ("デラウェア川(フィラデルフィア)", "inland"),
     "VEPLA": ("オリノコ川(パルア)", "inland"),
 }
 
@@ -154,7 +161,7 @@ def test_t303_unroutable_ports_carry_nulls_not_zeros(ports):
 
 
 def test_t303_unroutable_set_matches_the_reviewed_ledger(ports):
-    """実測した 13 件と一致すること。**理由まで台帳にある件だけ**を許す。
+    """台帳と一致すること。**理由まで台帳にある件だけ**を許す。
 
     出典が更新されて増減したらここが落ちる。落ちたときに
     「また河川港か」「新しい種類の欠陥か」を人が見るための関門である。
@@ -176,7 +183,8 @@ def test_t303_unroutable_reasons_match_the_reviewed_ledger(ports):
     reasons = ports["snap"]["unroutable_reasons"]
     for locode, (_, kind) in EXPECTED_UNROUTABLE.items():
         assert locode in reasons, f"{locode} が台帳にあるのに出力に無い"
-        actual = "inland" if "内陸" in reasons[locode] else "isolated"
+        r = reasons[locode]
+        actual = "disputed" if "疑義" in r else "inland" if "内陸" in r else "isolated"
         assert actual == kind, f"{locode}: 台帳 {kind} / 実際 {actual}"
 
 
@@ -229,7 +237,8 @@ def test_t304_position_and_statistic_declare_different_confidence(ports):
     assert ports["outflows_confidence"] == "STATISTICAL"
     assert "単位" in ports["outflows_note"], "単位が不明であることを出荷物が自分で言うこと"
     for f in ports["features"]:
-        assert f["properties"]["confidence"] == "OBSERVED"
+        # 同名の港へ移した港だけは同定が推定なので INFERRED(tests/test_port_positions.py T-305d)
+        assert f["properties"]["confidence"] in ("OBSERVED", "INFERRED")
         assert f["properties"]["outflows_confidence"] == "STATISTICAL"
 
 

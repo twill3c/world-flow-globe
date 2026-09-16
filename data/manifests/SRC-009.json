@@ -1,0 +1,20 @@
+{
+  "dataset_id": "SRC-009",
+  "provider": "UNECE(datasets/un-locode による CSV 化)",
+  "dataset": "UN/LOCODE Code List 2024-2",
+  "source_filename": "code-list.csv",
+  "retrieved_at": "2026-09-16T21:30:07Z",
+  "sha256": "014d5139df76894a89f7eeb529723417e790129a5c7ea3b3dac38c34a03455c1",
+  "bytes": 7287475,
+  "output": null,
+  "output_sha256": null,
+  "records": 0,
+  "etl_version": "3.2.0",
+  "notes": {
+    "source_quirks": [
+      "SRC-004 の主キー UN/LOCODE の定義元。地方区分(ISO 3166-2)・機能(1 桁目が '1' なら港)・座標を持つ",
+      "座標は分単位で、SRC-004 の 837 港のうち 504 港にしか無い(2026-09-17 実測)",
+      "**SRC-004 の座標は UN/LOCODE の座標をそのまま写したものが多い**(504 港中 452 港が完全一致)。一致する場合は独立の証拠として数えない"
+    ]
+  }
+}

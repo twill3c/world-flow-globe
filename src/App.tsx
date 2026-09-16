@@ -38,6 +38,7 @@ import type {
   RoutesDoc,
   SourceDef,
 } from "./types";
+import { POSITION_CHECK_LABEL } from "./types";
 
 export default function App() {
   const initLayers = useLayerStore((s) => s.init);
@@ -229,6 +230,46 @@ function Selection(props: {
       <p>
         経路に使える: {p.routable ? "はい" : "いいえ"}
         {p.routable && p.snap_km !== null ? `(格子への吸着 ${p.snap_km.toFixed(1)} km)` : ""}
+      </p>
+      <p>
+        位置: {POSITION_CHECK_LABEL[p.position_check]}
+        {p.position_check === "CORROBORATED" && (
+          <span className="muted">
+            {" "}
+            ({Object.keys(p.position_evidence)
+              .map((k) => k.split(/[:+#]/)[0])
+              .filter((k, i, a) => a.indexOf(k) === i)
+              .join(" ・ ")}{" "}
+            と 50 km 以内)
+          </span>
+        )}
+        {p.confidence === "INFERRED" && (
+          <>
+            {" "}
+            <span className="badge conf-INFERRED">推定</span>
+          </>
+        )}
+        {p.locode_candidate && (
+          <>
+            <br />
+            <span className="muted">港としてのコードは {p.locode_candidate} と考えられる</span>
+          </>
+        )}
+        {p.source_coordinates && (
+          <>
+            <br />
+            <span className="muted">
+              元データ(World Bank)の座標: {p.source_coordinates[0].toFixed(2)},{" "}
+              {p.source_coordinates[1].toFixed(2)}
+            </span>
+          </>
+        )}
+        {p.position_note && (
+          <>
+            <br />
+            <span className="muted">{p.position_note}</span>
+          </>
+        )}
       </p>
     </div>
   );

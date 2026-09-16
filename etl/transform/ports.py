@@ -19,6 +19,12 @@ ISO コードではない。名前で照合すると、表記ゆれのぶんだ�
 いちばん近い航行可能セルへ吸着させ、**吸着距離を港ごとに残す**。
 遠すぎて吸着できなかった港は ``routable: false`` として運ぶ ——
 黙って落とすと、経路が引けない理由が画面から分からなくなる。
+
+## 座標は照合してから使う(loop_008)
+
+SRC-004 の座標には同名の別地点が混ざっていた(清水・油津が北海道、Houston がアラスカ)。
+吸着の**前に** :mod:`etl.transform.port_audit` で独立の出典と照合し、
+人が判定した訂正表を当てる。照合と訂正表が整合しなければ例外で止まる。
 """
 
 from __future__ import annotations
@@ -36,6 +42,13 @@ from etl.io.wb_ports import read_wb_ports
 from etl.transform.geo import write_feature_collection
 from etl.transform.nav_grid import OUT as NAV_OUT
 from etl.transform.nav_grid import RESOLUTION_DEG, cell_center, cell_index
+from etl.transform.port_audit import (
+    CORRECTIONS_CSV,
+    THRESHOLD_KM,
+    References,
+    audit_ports,
+    read_corrections,
+)
 
 SRC = RAW / "worldbank" / "attributed_ports.geojson"
 NE_ZIP = RAW / "naturalearth" / "ne_10m_admin_0_countries.zip"
@@ -172,12 +185,41 @@ def snap_to_navigable(
     return best, best_km
 
 
+def _audit_summary(features: list[dict]) -> dict:
+    counts: dict[str, int] = {}
+    for f in features:
+        k = f["properties"]["position_check"]
+        counts[k] = counts.get(k, 0) + 1
+
+    def codes(pred) -> list[str]:
+        return sorted(f["properties"]["unlocode"] for f in features if pred(f["properties"]))
+
+    return {
+        "threshold_km": THRESHOLD_KM,
+        "references": ["SRC-008", "SRC-009", "SRC-010", "SRC-011"],
+        "corrections_table": str(CORRECTIONS_CSV.relative_to(CORRECTIONS_CSV.parents[2])).replace("\\", "/"),
+        "counts": dict(sorted(counts.items())),
+        "corrected_locodes": codes(lambda p: p["position_check"] == "CORRECTED"),
+        "identity_inferred_locodes": codes(lambda p: p["confidence"] == "INFERRED"),
+        "locode_candidate_locodes": codes(lambda p: p["locode_candidate"] is not None),
+        "disputed_locodes": codes(lambda p: p["position_check"] == "DISPUTED"),
+        "note": (
+            "SRC-004 の座標を独立の出典(SRC-008 World Port Index / SRC-009 UN/LOCODE の区分と座標 / "
+            "SRC-010 区分の多角形)と照合し、50 km を超えて食い違う港と UN/LOCODE が港と言っていない港を、"
+            "人が訂正表で一件ずつ判定した。UNCORROBORATED は照合できる出典が無かった港で、正しいとも誤りとも確かめていない"
+        ),
+    }
+
+
 def build_ports() -> dict:
     res = read_wb_ports(SRC)
     a2a3 = load_alpha2_to_alpha3()
     mask = load_nav_mask()
     ocean = main_ocean_cells(mask)
     cols = mask.shape[1]
+    audited = audit_ports(
+        [(r.locode, r.lon, r.lat) for r in res.records], References.load(), read_corrections()
+    )
 
     features = []
     unmapped: list[str] = []
@@ -190,11 +232,15 @@ def build_ports() -> dict:
         if iso3 is None:
             unmapped.append(rec.locode)
 
-        cell, dist = snap_to_navigable(mask, rec.lon, rec.lat)
+        pos = audited[rec.locode]
+        cell, dist = snap_to_navigable(mask, pos.lon, pos.lat)
         # 吸着できただけでは足りない。**そのセルから世界の海へ出られること**まで要る。
         in_ocean = cell is not None and (cell[0] * cols + cell[1]) in ocean
-        routable = in_ocean
-        if cell is None:
+        routable = in_ocean and pos.position_check != "DISPUTED"
+        if pos.position_check == "DISPUTED":
+            # 位置が決められない港で経路を引くと、誤った場所から線が出る
+            unroutable[rec.locode] = "位置に疑義があり経路に使わない(訂正表)"
+        elif cell is None:
             unroutable[rec.locode] = "上限内に航行可能セルが無い(内陸水路)"
         elif not in_ocean:
             unroutable[rec.locode] = "吸着先が孤立した水域で、世界の海と繋がっていない"
@@ -224,11 +270,21 @@ def build_ports() -> dict:
                     "grid_cell": list(cell) if cell else None,
                     "snap_km": round(dist, 2) if dist is not None else None,
                     "routable": routable,
-                    "confidence": "OBSERVED",
+                    # 同名の港へ移した港は、同定がこちらの推定なので INFERRED
+                    "confidence": "INFERRED" if pos.identity_inferred else "OBSERVED",
+                    "position_check": pos.position_check,
+                    "position_evidence": pos.position_evidence,
+                    "source_coordinates": (
+                        [round(pos.source_coordinates[0], COORD_PRECISION), round(pos.source_coordinates[1], COORD_PRECISION)]
+                        if pos.source_coordinates
+                        else None
+                    ),
+                    "locode_candidate": pos.locode_candidate,
+                    "position_note": pos.position_note,
                 },
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [round(rec.lon, COORD_PRECISION), round(rec.lat, COORD_PRECISION)],
+                    "coordinates": [round(pos.lon, COORD_PRECISION), round(pos.lat, COORD_PRECISION)],
                 },
             }
         )
@@ -246,6 +302,7 @@ def build_ports() -> dict:
         extra={
             "coordinate_precision": COORD_PRECISION,
             "position_confidence": "OBSERVED",
+            "position_audit": _audit_summary(features),
             "outflows_confidence": "STATISTICAL",
             "outflows_note": (
                 "出典 World Bank のフィールド名のまま運んでいる。"
@@ -277,6 +334,7 @@ def build_ports() -> dict:
         "collapsed_count": res.collapsed_count,
         "unmapped_country": len(unmapped),
         "unroutable": len(unroutable),
+        "position_check": _audit_summary(features)["counts"],
         "snap_km_median": round(float(np.median(snap_km)), 2) if snap_km else None,
         "snap_km_max": round(max(snap_km), 2) if snap_km else None,
         "bytes": OUT.stat().st_size,

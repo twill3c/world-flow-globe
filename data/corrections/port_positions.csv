@@ -1,0 +1,65 @@
+locode,action,evidence,lon,lat,locode_candidate,found_by,reason
+ASPPG,move,SRC-008#3343,,,,wpi,緯度の符号が逆(北緯 14.27 度に置かれていた)。パゴパゴは南緯 14.28 度
+BRRIG,move,SRC-008#3136,,,,subdivision;unlocode_coords;wpi,リオデジャネイロの座標に置かれていた。リオグランデ港はリオグランデ・ド・スル州(区分 BR-RS)
+BRSUA,move,SRC-008#1345,,,,subdivision;unlocode_coords;wpi,バイーア州に置かれていた。スアペ港はペルナンブーコ州(区分 BR-PE)
+CNYTN,move,SRC-008#2974,,,,subdivision;unlocode_coords;wpi,福建省に置かれていた。塩田港は深圳(広東省、区分 CN-GD)
+IDGTO,move,SRC-008#1875,,,,wpi,トミニ湾の南側(南緯 0.90 度)に置かれていた。ゴロンタロは北緯 0.5 度
+IDPNJ,move,SRC-008#314,,,,wpi,スマトラ島中部リアウの内陸に置かれていた。パンジャン港はランプン(スマトラ島南端)
+JPABU,move,SRC-011#Q11554369,131.405556,31.575278,,subdivision,北海道の網走付近に置かれていた。油津港は宮崎県日南市(区分 JP-45)。SRC-008 に油津の行が無く SRC-009 に座標が無いため Wikidata の項目 Port of Aburatsu の座標を使う
+JPSMZ,move,SRC-008#959,,,,subdivision;wpi,北海道十勝の清水町に置かれていた。清水港は静岡県(区分 JP-22)
+NGLKK,move,SRC-008#3579,,,,unlocode_coords;wpi,ラゴスの西(東経 3.1 度)に置かれていた。レッキ港はレッキ半島の東(東経 4.0 度)
+PAMIT,move,SRC-011#Q6753432,-79.882089,9.361958,,manual,パナマの太平洋側ベラグアス沖(西経 81.17 度・北緯 7.54 度)に置かれていた。マンサニヨ国際ターミナルはカリブ側コロン。四つの検査のどれにも当たらない(SRC-008 に同じコードが無く SRC-009 に区分も座標も無い)ため、名前での突き合わせで見つけた
+QAMES,move,SRC-008#1327,,,,not_a_port,カタール東方の海上に置かれていた。メサイード港は SRC-008 の Umm Said(別名 Mesaieed)。QAMES は UN/LOCODE 2024-2 に無い
+TRLMA,move,SRC-009#TRLMA,,,,subdivision;unlocode_coords,イズミル県アリアー付近に置かれていた。UN/LOCODE は区分 TR-41(コジャエリ)と座標 4043N 02953E の両方でイズミット湾を指す
+TRYAR,move,SRC-008#2508,,,,subdivision;wpi,アナトリア内陸(東経 31.14 度・北緯 39.08 度)に置かれていた。ヤルムジャ港はイズミット湾(区分 TR-41)
+USGLC,move,SRC-008#527,,,,subdivision,マサチューセッツ州グロスターに置かれていた。UN/LOCODE も名前も Gloucester City(ニュージャージー州)を指す。SRC-008 は同じコードを両方に付けている
+USPWM,move,SRC-008#453,,,,subdivision;wpi,オレゴン州ポートランド(USPDX と同じ座標)に置かれていた。USPWM はメイン州ポートランド。outflows も USPDX の約 12 分の 1 で別の港である
+JPHTD,move_relink,SRC-008#638,,,JPHKT,not_a_port,愛媛県の伯方島に置かれていた。JPHTD は伯方島の Hakata(道路のみ・港でない)。outflows が SRC-004 の 837 港中 164 位で、島の港の規模ではない。国内で港の機能を持つ Hakata は福岡の JPHKT(愛媛の JPHKS は名前が Hakatashima で違う)ため福岡の博多港へ移す
+NOHLA,move_relink,SRC-009#NOHOA,,,NOHOA,not_a_port,テレマルク県の内陸(吸着 96.8 km)に置かれていた。NOHLA は道路のみで港でない。国内で港の機能を持つ同名は NOHOA(区分 NO-16・トロンデラーグ)だけ
+TRELI,move_relink,SRC-008#2014,,,TRERE,not_a_port,コンヤ県エレーリ(内陸)に置かれていた。TRELI は道路のみ。国内で港の機能を持つ同名は TRERE(ゾングルダク県カラデニズ・エレーリ)だけ
+TRPAM,move_relink,SRC-008#1852,,,TRAMR,not_a_port,ギレスン県(東経 39.17 度)に置かれていた。TRPAM は道路のみ。国内で港の機能を持つ同名は TRAMR(イスタンブールのアンバルル)だけ
+USACL,move_relink,SRC-008#370,,,USCHT,not_a_port,バーモント州チェスター(内陸)に置かれていた。USACL は港でない。港の機能を持つ同名は USCHT(ペンシルベニア州)・USCR5(ウェストバージニア州)があるが、SRC-008 にある Chester は USCHT だけ
+USBCK,move_relink,SRC-008#1246,,,USSSI,not_a_port;subdivision,ニュージャージー州ニューブランズウィックに置かれていた。USBCK はオハイオ州ブランズウィック(道路のみ)。国内で港の機能を持つ同名は USSSI(ジョージア州)だけ
+USFEP,move_relink,SRC-008#764,,,USFPO,not_a_port;subdivision,メイン州フリーポートに置かれていた。USFEP はイリノイ州の空港。港の機能を持つ同名は USFPO(テキサス州)ほか 2 件あるが、SRC-008 にある Freeport は USFPO だけ
+USHKA,move_relink,SRC-008#75,,,USHOU,not_a_port,アラスカ州ヒューストンに置かれていた。USHKA はアラスカの Houston(港でない)で座標も区分もそこを指す。outflows が 837 港中 47 位。国内で港の機能を持つ同名は USHOU(テキサス州)だけ
+USNFF,move_relink,SRC-008#124,,,USORF,not_a_port,コネチカット州ノーフォーク(内陸)に置かれていた。USNFF は港でない。outflows が 837 港中 32 位。国内で港の機能を持つ同名は USORF(バージニア州)だけ
+USPDP,move_relink,SRC-008#155,,,USPHL,not_a_port,ニューヨーク州フィラデルフィア(内陸)に置かれていた。USPDP は港でない。国内で港の機能を持つ同名は USPHL(ペンシルベニア州)だけ
+INHZR,relink,SRC-008#1215,,,INHZA,not_a_port;subdivision;unlocode_coords,座標はグジャラート州のハジラ港で正しい。INHZR はハリヤーナー州の Hazira(道路のみ)を指す。港は INHZA
+USCAT,relink,SRC-008#369,,,USCDE,not_a_port;subdivision,座標はニュージャージー州カムデン港で正しい。USCAT はテネシー州カムデン(道路のみ)を指す。港は USCDE
+USCAV,relink,SRC-008#2870,,,USCLE,not_a_port;subdivision,座標はオハイオ州クリーブランド港で正しい。USCAV はテキサス州クリーブランド(道路のみ)を指す。港は USCLE
+USEPI,relink,SRC-008#2060,,,USEPM,not_a_port;subdivision;unlocode_coords,座標はメイン州イーストポート港で正しい。USEPI はアイダホ州イーストポート(国境の道路)を指す。港は USEPM
+USGFP,relink,SRC-008#536,,,USGPT,not_a_port;subdivision;unlocode_coords,座標はミシシッピ州ガルフポート港で正しい。USGFP はフロリダ州ガルフポート(道路)を指す。港は USGPT
+USIJX,relink,SRC-008#1244,,,USJAX,not_a_port;subdivision,座標はフロリダ州ジャクソンビル港で正しい。USIJX はイリノイ州ジャクソンビルの空港を指す。港は USJAX
+USKND,relink,SRC-008#425,,,USOAK,not_a_port;subdivision;unlocode_coords,座標はカリフォルニア州オークランド港の近く(SRC-008 から 16 km)。USKND はオレゴン州オークランド(道路)を指す。港は USOAK
+JPISS,disputed,,,,,not_a_port,鹿児島県伊佐市(内陸・吸着 83.1 km)に置かれている。JPISS は道路のみで港でない。国内に港の機能を持つ Isa が無く、SRC-008 にも無い。どの港を指すか決められない
+PTPIC,disputed,,,,,not_a_port,ブラガ県の内陸(ポルトガル本土)に置かれている。PTPIC は道路のみで港でない。アゾレス諸島のピコ島の港を指す可能性があるが、港の機能を持つ同名が UN/LOCODE にも SRC-008 にも無く決められない
+AIAXA,keep,,,,,not_a_port,UN/LOCODE の機能は空港と郵便のみだが、座標はアンギラ島で港の位置として妥当。照合できる出典は無い
+AOMAL,keep,,,,,not_a_port,UN/LOCODE の機能欄が未確定(0)。SRC-008 と 13.3 km で一致
+BRIGI,keep,,,,,not_a_port,UN/LOCODE の機能に港の桁が無いが、イタグアイ港は実在し区分 BR-RJ と一致
+BRSLZ,keep,,,,,not_a_port,UN/LOCODE の機能に港の桁が無いが、サンルイス(イタキ港)は実在し区分と座標の両方と一致
+CNFQG,keep,,,,,not_a_port,UN/LOCODE の機能は道路のみだが、福清は福建の港湾都市で座標はその市域。照合できる出典は無い
+CNQZJ,keep,,,,,not_a_port,CNQZJ は UN/LOCODE 2024-2 に無い。座標は泉州港の近く。照合できる出典は無い
+CUMOA,keep,,,,,not_a_port,UN/LOCODE の機能は空港のみだが、モア港は実在し SRC-008 と 5.4 km で一致
+CVPAL,keep,,,,,not_a_port,UN/LOCODE の機能欄が未確定(0)。座標はサル島パルメイラ港。照合できる出典は無い
+CVSAR,keep,,,,,not_a_port,UN/LOCODE の機能欄が未確定(0)。座標はボアビスタ島サルレイ。照合できる出典は無い
+EEPLA,keep,,,,,not_a_port,UN/LOCODE の機能に港の桁が無いが、パルディスキ港は実在し区分と一致
+GUPIT,keep,,,,,not_a_port,UN/LOCODE の機能は道路のみだが、ピティはグアムのアプラ港に面する。照合できる出典は無い
+MHKWA,keep,,,,,not_a_port,UN/LOCODE の機能は空港のみだが、クェゼリンは SRC-008 と 6.5 km で一致
+MXPRO,keep,,,,,not_a_port,UN/LOCODE の機能は道路のみだが、パライソ(ドスボカス港)は実在し区分 MX-TAB と一致。座標は港でなく市の中心を指す
+PACSO,keep,,,,,not_a_port,UN/LOCODE の機能は道路のみだが、ココソロはコロンのコンテナ港。照合できる出典は無い
+RUGDX,keep,,,,,not_a_port,UN/LOCODE の機能は空港のみだが、マガダン(ナガエフ湾)は実在の港。照合できる出典は無い
+THHKT,keep,,,,,not_a_port,コードは空港(Phuket International Apt)だが、座標はプーケット島で区分と一致。港の位置としては島の北端に寄る
+UYPTP,keep,,,,,not_a_port,UN/LOCODE の機能は道路のみだが、プンタペレイラ港は実在し区分 UY-CO と一致
+WFFUT,keep,,,,,not_a_port,コードは空港だが、座標はフツナ島で港の位置として妥当。照合できる出典は無い
+CDBNW,keep,,,,,unlocode_coords,UN/LOCODE の座標の緯度の符号が逆(北緯 6 度)。SRC-008 と 3.0 km で一致
+CNDJK,keep,,,,,subdivision,UN/LOCODE の区分が GD(広東)だが、UN/LOCODE 自身の座標は山東の日照を指し SRC-004 と 38.6 km で一致。区分の側の誤り
+CNJGY,keep,,,,,wpi,SRC-008 は CNJGY を江蘇省の江陰に付けているが、コードの定義元の UN/LOCODE は区分 FJ(福建)と座標の両方で SRC-004 と一致
+CNZZU,keep,,,,,wpi,SRC-008 と 53.8 km。SRC-004 は漳州の市域、SRC-008 は東へ離れた九龍江の河口側を指す。区分 CN-FJ とは一致し、閾値をわずかに超えただけで別の地点ではない
+ERMSW,keep,,,,,subdivision,区分の多角形から 52.7 km だが SRC-008 と 2.6 km で一致。Natural Earth と UN/LOCODE の区分の境界の差
+ESSPC,keep,,,,,subdivision,UN/LOCODE の区分は GC(ラスパルマス県)だが、ラ・パルマ島はサンタクルス・デ・テネリフェ県。SRC-008 と 1.6 km で一致
+IRASA,keep,,,,,subdivision,イランの州の番号が UN/LOCODE と Natural Earth で体系が違う。座標はペルシャ湾岸のアサルーイェ
+IRBKM,keep,,,,,subdivision,イランの州の番号が UN/LOCODE と Natural Earth で体系が違う。SRC-008 と 1.6 km で一致
+IRBND,keep,,,,,subdivision,イランの州の番号が UN/LOCODE と Natural Earth で体系が違う。SRC-008 と 7.6 km で一致
+IRBUZ,keep,,,,,subdivision,イランの州の番号が UN/LOCODE と Natural Earth で体系が違う。SRC-008 と 1.9 km で一致
+NOHVI,keep,,,,,subdivision,ノルウェーの県番号が改定されており UN/LOCODE の 18 と Natural Earth が食い違う。座標(北緯 59.3 度・東経 5.32 度)はノルウェー南西岸で港の位置として妥当
+PGKIM,keep,,,,,wpi,SRC-008 と 63.8 km。SRC-004 はキンベの町(南緯 5.55 度・東経 150.14 度)を指し、SRC-008 はキンベ湾の沖合 35 km の海上の点(Natural Earth の陸地から 35.1 km)。町の埠頭の位置として SRC-004 を残す

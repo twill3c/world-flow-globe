@@ -3,11 +3,11 @@
   "provider": "World Bank",
   "dataset": "Global International Ports",
   "source_filename": "attributed_ports.geojson",
-  "retrieved_at": "2026-09-07T10:59:47Z",
+  "retrieved_at": "2026-09-16T21:38:56Z",
   "sha256": "9b877f76ffb9decce60ce5bd8d499e3ccd67599819b8eace12f4b52df055ca42",
   "bytes": 236236,
   "output": "public/data/infrastructure/ports.geojson",
-  "output_sha256": "63003f15235aae627eb9f0ce4d90f951d126cfde6b51eab07bf020b3c86c1d5e",
+  "output_sha256": "820d44ce5174e66ab7dab897b28dfb8be52341becc07ae010f19758eb5820678",
   "records": 837,
   "etl_version": "3.2.0",
   "notes": {
@@ -16,10 +16,16 @@
       "raw_feature_count": 856,
       "collapsed_count": 19,
       "unmapped_country": 6,
-      "unroutable": 19,
-      "snap_km_median": 32.76,
-      "snap_km_max": 159.75,
-      "bytes": 353826
+      "unroutable": 18,
+      "position_check": {
+        "CORRECTED": 25,
+        "CORROBORATED": 755,
+        "DISPUTED": 2,
+        "UNCORROBORATED": 55
+      },
+      "snap_km_median": 32.72,
+      "snap_km_max": 157.82,
+      "bytes": 498334
     },
     "unmapped_locodes": [
       "BQKRA",
